@@ -154,16 +154,76 @@ function register_custom_menu() {
     require_once('wp_bootstrap_navwalker.php');
 
 // Add Custom Header support
-/*function custom_header_support() {
-$args = array(
-	'width'         => 1140,
-	'height'        => 350,
-	'default-image' => get_template_directory_uri() . '/img/header.jpg',
-	'uploads'       => true,
-);
-add_theme_support( 'custom-header', $args );
+function custom_header_support() {
+  /* Font Sizes */
+  add_theme_support( 'editor-font-sizes', array(
+      array(
+          'name' => __( 'Small', 'themeLangDomain' ),
+          'size' => 11,
+          'slug' => 'small'
+      ),
+      array(
+          'name' => __( 'Normal', 'themeLangDomain' ),
+          'size' => 13,
+          'slug' => 'normal'
+      ),
+      array(
+          'name' => __( 'Large', 'themeLangDomain' ),
+          'size' => 18,
+          'slug' => 'large'
+      )
+  ) );
+
+  /* Color Blocks */
+  add_theme_support( 'editor-color-palette', array(
+      array(
+          'name' => __( 'white', 'themeLangDomain' ),
+          'slug' => 'white',
+          'color' => '#ffffff',
+      ),
+      array(
+          'name' => __( 'off-white', 'themeLangDomain' ),
+          'slug' => 'off-white',
+          'color' => '#f7f7f7',
+      ),
+      array(
+          'name' => __( 'black', 'themeLangDomain' ),
+          'slug' => 'black',
+          'color' => '#000000',
+      ),
+      array(
+          'name' => __( 'medium gray', 'themeLangDomain' ),
+          'slug' => 'medium-gray',
+          'color' => '#dddddd',
+      ),
+      array(
+          'name' => __( 'light gray', 'themeLangDomain' ),
+          'slug' => 'light-gray',
+          'color' => '#e4e4e4',
+      ),
+      array(
+          'name' => __( 'blue', 'themeLangDomain' ),
+          'slug' => 'blue',
+          'color' => '#041e42',
+      ),
+      array(
+          'name' => __( 'aqua', 'themeLangDomain' ),
+          'slug' => 'aqua',
+          'color' => '#00679a',
+      ),
+      array(
+          'name' => __( 'gold', 'themeLangDomain' ),
+          'slug' => 'gold',
+          'color' => '#a99260',
+      ),
+      array(
+          'name' => __( 'gold fade', 'themeLangDomain' ),
+          'slug' => 'gold-fade',
+          'color' => '#e9e4da',
+      ),
+  ) );
 }
-add_action( 'after_setup_theme', 'custom_header_support' ); */
+add_action( 'after_setup_theme', 'custom_header_support' );
 
 // Register Sidebars
 add_action( 'widgets_init' , 'register_custom_sidebars' );
@@ -223,7 +283,7 @@ register_sidebar(array(
 
 // Custom WordPress Admin Footer
 function remove_footer_admin () {
-	echo 'Theme Copyright &copy; 2016 University Web Team, Georgia Southern University';
+	echo 'Theme Copyright &copy; 2019 University Web Team, Georgia Southern University';
 }
 add_filter('admin_footer_text', 'remove_footer_admin');
 
@@ -247,7 +307,7 @@ add_action( 'wp_before_admin_bar_render', 'remove_admin_bar_links' );
 
 // Customize tinymce editor
 function customize_mce_buttons($init) {
-	$init['toolbar1'] = 'bold,italic,strikethrough,bullist,numlist,blockquote,hr,alignleft,aligncenter,alignright,alignjustify,link,unlink,wp_more,spellchecker,fullscreen,wp_adv';
+	$init['toolbar1'] = 'bold,italic,strikethrough,bullist,numlist,blockquote,hr,alignleft,aligncenter,alignright,alignjustify,link,unlink,wp_more,spellchecker,fullscreen,wp_adv,bootstrapshortcode';
 	$init['toolbar2'] = 'formatselect,pastetext,removeformat,charmap,superscript,subscript,outdent,indent,undo,redo,table,wp_help';
 	$init['block_formats'] = "Paragraph=p; Heading 2=h2; Heading 3=h3; Heading 4=h4; Heading 5=h5; Heading 6=h6";
 	return $init;
@@ -369,9 +429,10 @@ function digwp_complete_version_removal() {
 
 // clear rss widget cache every 15 mins
 //add_filter( 'wp_feed_cache_transient_lifetime', create_function( '$a', 'return 900;' ) );
-add_action('wp_feed_cache_transient_lifetime', function(){
+add_filter('wp_feed_cache_transient_lifetime', 'clear_cache');
+function clear_cache(){
 		return 900;
-	});
+	}
 
 // 3/30/16 - RHickey, fix to resolve issue introduced in WP 4.4.2 with URL used for img srcset attributes
 // In SSL, force URLs in srcset attributes to use https. 
